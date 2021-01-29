@@ -3,12 +3,12 @@
 /**
  * @description There is a @suppressWarnings annotation on this class for Cyclomatic Complexity.
  * You can read more about what Cyclomatic Complexity is here: https://en.wikipedia.org/wiki/Cyclomatic_complexity
- * Classes with a high Cyclomatic Compelexity score are harder to test, and more prone to
+ * Classes with a high Cyclomatic Complexity score are harder to test, and more prone to
  * bugs because of the sheer number of branching logic paths available. This class' is made
  * up of a number of small methods, each of whom does Crud/FLS Checks and therefor every method
  * includes at least one branching path. Because this class is designed to teach safe DML
  * I've decided to mute this warning. Other classes in this Repo do not have such a high
- * Cyclomatic Complexity, because the ratio of logic to if/else statments is much lower.
+ * Cyclomatic Complexity, because the ratio of logic to if/else statements is much lower.
  *
  */
 public class DMLRecipes_Tests {
@@ -48,7 +48,6 @@ public class DMLRecipes_Tests {
     @isTest
     static void testDatabaseMethodInsertPositive() {
         Test.startTest();
-        Boolean didCatchTheRightException = false;
         DMLRecipes.insertAccountsViaDatabaseMethod('Texas', false);
         Test.stopTest();
 
@@ -92,7 +91,7 @@ public class DMLRecipes_Tests {
         Account acct = TestDataHelpers.genAccountWithOptions(true, 'IR');
 
         Test.startTest();
-        Account testAccount = DMLRecipes.upsertAccountViaUpsertKeyword(acct);
+        DMLRecipes.upsertAccountViaUpsertKeyword(acct);
         Test.stopTest();
 
         List<Account> resultingAccounts = [
@@ -265,7 +264,7 @@ public class DMLRecipes_Tests {
         Test.stopTest();
         try {
             String checkAcct = [SELECT name FROM Account WHERE id = :acct.Id]
-            .Name;
+            .Name; //NOPMD
         } catch (QueryException qe) {
             if (
                 qe.getMessage()
@@ -309,7 +308,7 @@ public class DMLRecipes_Tests {
         Test.stopTest();
         try {
             String checkAcct = [SELECT name FROM Account WHERE id = :acct.Id]
-            .Name;
+            .Name; //NOPMD
         } catch (QueryException qe) {
             if (
                 qe.getMessage()

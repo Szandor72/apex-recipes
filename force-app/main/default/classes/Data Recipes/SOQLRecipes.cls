@@ -9,16 +9,12 @@ public inherited sharing class SOQLRecipes {
      * @description Demonstrates the proper way to query accounts with SOQL
      *   keeping FLS and CRUD in account.
      *
-     * Note: This method has a false-positive PMD warning. PMD isn't aware of
-     * what WITH SECURITY_ENFORCED does, so it falsely thinks this code doesn't
-     * respect FLS/CRUD.
      * @return list<Account>
      * @example
      * List<Account> results = SOQLRecipes.querySingleObject();
      * System.debug(results);
      **/
-    @SuppressWarnings('PMD.ApexCRUDViolation')
-    public static list<Account> querySingleObject() {
+    public static List<Account> getRecords() {
         List<Account> accounts = new List<Account>();
         accounts = [
             SELECT Name, ShippingStreet, ShippingCity
@@ -31,17 +27,11 @@ public inherited sharing class SOQLRecipes {
     /**
      * @description Demonstrates how to loop over a SOQL query
      *
-     * Note: This method has a false-positive PMD warning. Our query
-     * includes the keyword 'WITH SECURITY_ENFORCED' which prevents this
-     * query from accessing fields and objects that they don't have permission
-     * to access. This is a form of inline CRUD/FLS Check.
-     *
      * @return integer
      * @example
-     * System.debug(SOQLRecipes.queryMassiveNumberOfRecordsReturningCount());
+     * System.debug(SOQLRecipes.getLargeNumberOfRecords());
      **/
-    @SuppressWarnings('PMD.ApexCRUDViolation')
-    public static integer queryMassiveNumberOfRecordsReturningCount() {
+    public static Integer getLargeNumberOfRecords() {
         Integer count = 0;
         /**
          * You'll see this pattern, called a SQOL for loop used
@@ -57,18 +47,41 @@ public inherited sharing class SOQLRecipes {
     }
 
     /**
+     * @description One of the little known features of SOQL for loops is that
+     * you can iterate not only over each record returned by the query, but also
+     * over each *chunk of records*. As the code below demonstrates, specifying
+     * the iteration variable as a list/array will return 200 record chunks
+     * from the query, rather than individual records.
+     *
+     * Note: Normally, if you're only dealing with counts of records, you'd
+     * utilize the Count() soql method, but in this case we're demonstrating
+     * that this form of a soql for loop gives you access both to a list of
+     * records, and to the records themselves.
+     * @return      `Integer`
+     */
+    public static Integer[] getChunksOfLargeNumbersOfRecords() {
+        Integer countOfChunks = 0;
+        Integer recordCount = 0;
+
+        for (List<Account> accounts : [
+            SELECT Name
+            FROM Account
+            WITH SECURITY_ENFORCED
+        ]) {
+            countOfChunks += 1;
+            recordCount += accounts.size();
+        }
+        return new List<Integer>{ countOfChunks, recordCount };
+    }
+
+    /**
      * @description Demonstrates how to use a WHERE clause in a SOQL query
      *
-     * Note: This method has a false-positive PMD warning. Our query
-     * includes the keyword 'WITH SECURITY_ENFORCED' which prevents this
-     * query from accessing fields and objects that they don't have permission
-     * to access. This is a form of inline CRUD/FLS Check.
      * @return List<Account>
      * @example
-     * System.debug(SOQLRecipes.getFilteredList());
+     * System.debug(SOQLRecipes.getRecordsByFieldValue());
      **/
-    @SuppressWarnings('PMD.ApexCRUDViolation')
-    public static List<Account> getFilteredList() {
+    public static List<Account> getRecordsByFieldValue() {
         return [
             SELECT Name
             FROM Account
@@ -80,17 +93,11 @@ public inherited sharing class SOQLRecipes {
     /**
      * @description Demonstrates how to use a complex WHERE clause in a SOQL
      * query
-     *
-     * Note: This method has a false-positive PMD warning. Our query
-     * includes the keyword 'WITH SECURITY_ENFORCED' which prevents this
-     * query from accessing fields and objects that they don't have permission
-     * to access. This is a form of inline CRUD/FLS Check.
      * @return List<Account>
      * @example
-     * System.debug(SOQLRecipes.getComplexFilteredList());
+     * System.debug(SOQLRecipes.getRecordsByMultipleFieldValues());
      **/
-    @SuppressWarnings('PMD.ApexCRUDViolation')
-    public static List<Account> getComplexFilteredList() {
+    public static List<Account> getRecordsByMultipleFieldValues() {
         return [
             SELECT Name
             FROM Account
@@ -105,20 +112,14 @@ public inherited sharing class SOQLRecipes {
 
     /**
      * @description Demonstrates how to use the LIMIT clause in a SOQL statement
-     *
-     * Note: This method has a false-positive PMD warning. Our query
-     * includes the keyword 'WITH SECURITY_ENFORCED' which prevents this
-     * query from accessing fields and objects that they don't have permission
-     * to access. This is a form of inline CRUD/FLS Check.
      * @return List<Account>
      * @example
-     * System.debug(SOQLRecipes.getSpecificNumberOfResults());
+     * System.debug(SOQLRecipes.getSpecificNumberOfRecords());
      **/
-    @SuppressWarnings('PMD.ApexCRUDViolation')
-    public static List<Account> getSpecificNumberOfResults() {
+    public static List<Account> getSpecificNumberOfRecords() {
         //LIMIT clause
         return [
-            SELECT name
+            SELECT Name
             FROM Account
             WITH SECURITY_ENFORCED
             ORDER BY Industry DESC
@@ -130,18 +131,13 @@ public inherited sharing class SOQLRecipes {
      * @description Demonstrates how to use a bound variable to define the LIMIT
      * @param wantedNumberOfRows the number of rows desired
      *
-     * Note: This method has a false-positive PMD warning. Our query
-     * includes the keyword 'WITH SECURITY_ENFORCED' which prevents this
-     * query from accessing fields and objects that they don't have permission
-     * to access. This is a form of inline CRUD/FLS Check.
      * @return List<Account>
      * @example
-     * System.debug(SOQLRecipes.getFirstXResults(5));
+     * System.debug(SOQLRecipes.getFirstXRecords(5));
      **/
-    @SuppressWarnings('PMD.ApexCRUDViolation')
-    public static List<Account> getFirstXResults(Integer wantedNumberOfRows) {
+    public static List<Account> getFirstXRecords(Integer wantedNumberOfRows) {
         return [
-            SELECT name
+            SELECT Name
             FROM Account
             WITH SECURITY_ENFORCED
             ORDER BY Industry DESC
@@ -152,17 +148,11 @@ public inherited sharing class SOQLRecipes {
     /**
      * @description Demonstrates how to use a bound variable in a WHERE clause
      * @param state String representing a US State code (AK, KS, etc.)
-     *
-     * Note: This method has a false-positive PMD warning. Our query
-     * includes the keyword 'WITH SECURITY_ENFORCED' which prevents this
-     * query from accessing fields and objects that they don't have permission
-     * to access. This is a form of inline CRUD/FLS Check.
      * @return List<Account>
      * @example
-     * System.debug(SOQLRecipes.getAccountsInState('ks'));
+     * System.debug(SOQLRecipes.getAccountRecordsInState('ks'));
      **/
-    @SuppressWarnings('PMD.ApexCRUDViolation')
-    public static List<Account> getAccountsInState(String state) {
+    public static List<Account> getAccountRecordsInState(String state) {
         return [
             SELECT Name
             FROM Account
@@ -175,18 +165,13 @@ public inherited sharing class SOQLRecipes {
      * @description Demonstrates how to get a limited number of results with a
      * given offset; Ie: get the second set of 10 records.
      *
-     * Note: This method has a false-positive PMD warning. Our query
-     * includes the keyword 'WITH SECURITY_ENFORCED' which prevents this
-     * query from accessing fields and objects that they don't have permission
-     * to access. This is a form of inline CRUD/FLS Check.
      * @return List<Account>
      * @example
-     * System.debug('SOQLRecipes.getSecond10Accounts()');
+     * System.debug('SOQLRecipes.getSecond10AccountRecords()');
      **/
-    @SuppressWarnings('PMD.ApexCRUDViolation')
-    public static List<Account> getSecond10Accounts() {
+    public static List<Account> getSecond10AccountRecords() {
         return [
-            SELECT id
+            SELECT Id
             FROM Account
             WITH SECURITY_ENFORCED
             ORDER BY Industry DESC
@@ -199,16 +184,11 @@ public inherited sharing class SOQLRecipes {
      * @description Demonstrates how to query an object, as well as it's related
      * child objects
      *
-     * Note: This method has a false-positive PMD warning. Our query
-     * includes the keyword 'WITH SECURITY_ENFORCED' which prevents this
-     * query from accessing fields and objects that they don't have permission
-     * to access. This is a form of inline CRUD/FLS Check.
      * @return List<Account>
      * @example
-     * System.debug(SOQLRecipes.getContactsAndAccounts());
+     * System.debug(SOQLRecipes.getRecordsWithRelatedRecords());
      **/
-    @SuppressWarnings('PMD.ApexCRUDViolation')
-    public static List<Account> getContactsAndAccounts() {
+    public static List<Account> getRecordsWithRelatedRecords() {
         return [
             SELECT Name, (SELECT Name, AccountId FROM Contacts)
             FROM Account
@@ -220,20 +200,15 @@ public inherited sharing class SOQLRecipes {
      * @description Demonstrates how to query fields from a parent object
      * through the relationship field
      *
-     * Note: This method has a false-positive PMD warning. Our query
-     * includes the keyword 'WITH SECURITY_ENFORCED' which prevents this
-     * query from accessing fields and objects that they don't have permission
-     * to access. This is a form of inline CRUD/FLS Check.
      * @return List<Contact>
      * @example
-     * System.debug(SOQLRecipes.getParentDetailsForChild());
+     * System.debug(SOQLRecipes.getParentRecordDetailsFromChildRecord());
      **/
-    @SuppressWarnings('PMD.ApexCRUDViolation')
-    public static List<Contact> getParentDetailsForChild() {
+    public static List<Contact> getParentRecordDetailsFromChildRecord() {
         return [
-            SELECT Id, Name, Email, account.Name, account.ShippingState
+            SELECT Id, Name, Email, Account.Name, Account.ShippingState
             FROM Contact
-            WHERE account.ShippingState = 'KS'
+            WHERE Account.ShippingState = 'KS'
             WITH SECURITY_ENFORCED
         ];
     }
@@ -242,18 +217,13 @@ public inherited sharing class SOQLRecipes {
      * @description Demonstrates how to write a query that pulls information
      * from two parent objects through a junction object
      *
-     * Note: This method has a false-positive PMD warning. Our query
-     * includes the keyword 'WITH SECURITY_ENFORCED' which prevents this
-     * query from accessing fields and objects that they don't have permission
-     * to access. This is a form of inline CRUD/FLS Check.
      * @return List<Junction__c>
      * @example
-     * System.debug(SOQLRecipes.getDetailsFromBothParents());
+     * System.debug(SOQLRecipes.getDetailsFromBothParentRecords());
      **/
-    @SuppressWarnings('PMD.ApexCRUDViolation')
-    public static List<Junction__c> getDetailsFromBothParents() {
+    public static List<Junction__c> getDetailsFromBothParentRecords() {
         return [
-            SELECT Id, parent1__r.Name, parent2__r.Name
+            SELECT Id, parent1__r.Name, Parent2__r.Name
             FROM Junction__c
             WITH SECURITY_ENFORCED
         ];
@@ -264,24 +234,19 @@ public inherited sharing class SOQLRecipes {
      * Count() in a SOQL query. This example generates the sum of opportunities
      * associated with a specified Account
      *
-     * Note: This method has a false-positive PMD warning. Our query
-     * includes the keyword 'WITH SECURITY_ENFORCED' which prevents this
-     * query from accessing fields and objects that they don't have permission
-     * to access. This is a form of inline CRUD/FLS Check.
      * @param accountId an AccountId
      * @return Double
      * @example
      * Id accountId = [SELECT id FROM Account LIMIT 1].Id;
-     * System.debug(SOQLRecipes.getSumOfOpportunities(accountId));
+     * System.debug(SOQLRecipes.getSumOfOpportunityRecords(accountId));
      **/
-    @SuppressWarnings('PMD.ApexCRUDViolation')
-    public static Double getSumOfOpportunities(Id accountId) {
-        AggregateResult[] groupedResults = [
+    public static Double getSumOfOpportunityRecords(Id accountId) {
+        List<AggregateResult> groupedResults = [
             SELECT SUM(Amount) total
             FROM Opportunity
-            WHERE accountId = :accountId
+            WHERE AccountId = :accountId
             WITH SECURITY_ENFORCED
         ];
-        return (double) groupedResults[0].get('total');
+        return (Double) groupedResults[0].get('total');
     }
 }

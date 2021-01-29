@@ -19,7 +19,7 @@ public inherited sharing class PlatformCacheRecipes {
     /**
      * Enum for partition type.
      */
-    public enum PatitionType {
+    public enum PartitionType {
         SESSION,
         ORG
     }
@@ -51,17 +51,17 @@ public inherited sharing class PlatformCacheRecipes {
         String toStore,
         Integer ttl
     ) {
-        getDefaultPartition(PatitionType.SESSION).put(key, toStore, ttl);
+        getDefaultPartition(PartitionType.SESSION).put(key, toStore, ttl);
     }
 
     /**
      * @description Retrieves a value from the cache identified by key
      * @param key   String key of which value to retrieve.
-     * @returns     `String`
+     * @return     `String`
      */
     public static String getValueFromSessionCache(String key) {
         Cache.Partition defPartition = getDefaultPartition(
-            PatitionType.SESSION
+            PartitionType.SESSION
         );
         if (defPartition.contains(key)) {
             return (String) defPartition.get(key);
@@ -76,7 +76,7 @@ public inherited sharing class PlatformCacheRecipes {
      */
     public static void removeKeyFromSessionCache(String key) {
         Cache.Partition defPartition = getDefaultPartition(
-            PatitionType.SESSION
+            PartitionType.SESSION
         );
         if (defPartition.contains(key)) {
             defPartition.remove(key);
@@ -111,16 +111,16 @@ public inherited sharing class PlatformCacheRecipes {
         String toStore,
         Integer ttl
     ) {
-        getDefaultPartition(PatitionType.ORG).put(key, toStore, ttl);
+        getDefaultPartition(PartitionType.ORG).put(key, toStore, ttl);
     }
 
     /**
      * @description Retrieves a value from the cache identified by key
      * @param key   String key of which value to retrieve.
-     * @returns     `String`
+     * @return     `String`
      */
     public static String getValuefromOrgCache(String key) {
-        Cache.Partition defPartition = getDefaultPartition(PatitionType.ORG);
+        Cache.Partition defPartition = getDefaultPartition(PartitionType.ORG);
         if (defPartition.contains(key)) {
             return (String) defPartition.get(key);
         }
@@ -133,7 +133,7 @@ public inherited sharing class PlatformCacheRecipes {
      * @exception   CacheException custom exception when key not found.
      */
     public static void removeKeyFromOrgCache(String key) {
-        Cache.Partition defPartition = getDefaultPartition(PatitionType.ORG);
+        Cache.Partition defPartition = getDefaultPartition(PartitionType.ORG);
         if (defPartition.contains(key)) {
             defPartition.remove(key);
         } else {
@@ -144,9 +144,9 @@ public inherited sharing class PlatformCacheRecipes {
     /**
      * @description returns a Cache.Partition for a given name, and type
      * @param type  Enum of .SESSION or .ORG
-     * @returns     `Cache.Partition`
+     * @return     `Cache.Partition`
      */
-    public static Cache.Partition getDefaultPartition(PatitionType type) {
+    public static Cache.Partition getDefaultPartition(PartitionType type) {
         switch on type {
             when SESSION {
                 return (Cache.Partition) Cache.Session.getPartition(

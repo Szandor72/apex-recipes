@@ -15,10 +15,22 @@
  * examples in your terminal application of choice.  You might also consider a
  * third party UI based tool like Postman to ease things like authentication.
  *
+ * Note: There is a @suppressWarnings annotation on this class for Cyclomatic
+ * Complexity. You can read more about what Cyclomatic Complexity is here:
+ * https://en.wikipedia.org/wiki/Cyclomatic_complexity Classes with a high
+ * Cyclomatic Compelexity score are harder to test, and more prone to bugs
+ * because of the sheer number of branching logic paths available. This class
+ * is made up of a number of small methods, each of whom does CRUD/FLS Checks
+ * and therefor every method includes at least one branching path - but not
+ * much else. Other classes in this repository do not have such a high
+ * Cyclomatic Complexity because the ratio of logic to if/else statments is much
+ * lower.
+ *
  * See CalloutRecipes for examples on how to call the custom REST endpoint.
  * @group Integration Recipes
  * @see CanTheUser
  */
+@SuppressWarnings('PMD.CyclomaticComplexity')
 @RestResource(urlmapping='/IntegrationService/*')
 global inherited sharing class CustomRestEndpointRecipes {
     /**
@@ -108,8 +120,8 @@ global inherited sharing class CustomRestEndpointRecipes {
         RestRequest request = RestContext.request;
         // We can get the Id of the contact from the URL params by isolating the
         // requestUri from the RestRequest
-        String recordId = request.requestUri.substring(
-            request.requestUri.lastIndexOf('/') + 1
+        String recordId = request.requestURI.substring(
+            request.requestURI.lastIndexOf('/') + 1
         );
         RestResponse response = RestContext.response;
         if (!CanTheUser.destroy(new Contact())) {
@@ -147,7 +159,7 @@ global inherited sharing class CustomRestEndpointRecipes {
             );
             response.statusCode = 400;
             return qe.getMessage();
-        } catch (DMLException dmle) {
+        } catch (DmlException dmle) {
             // If we have an issue deleting the Contact we can catch the DML
             // exception
             // We are unable to test this for code coverage as we can't trigger
@@ -223,7 +235,7 @@ global inherited sharing class CustomRestEndpointRecipes {
             );
             response.statusCode = 400;
             return je.getMessage();
-        } catch (DMLException dmle) {
+        } catch (DmlException dmle) {
             // If we have an issue inserting the Contacts we can catch the DML
             // exception
             // We are unable to test this for code coverage as we can't trigger
@@ -306,7 +318,7 @@ global inherited sharing class CustomRestEndpointRecipes {
             );
             response.statusCode = 400;
             return je.getMessage();
-        } catch (DMLException dmle) {
+        } catch (DmlException dmle) {
             // If we have an issue upserting the Contacts we can catch the DML
             // exception
             System.debug(
@@ -391,7 +403,7 @@ global inherited sharing class CustomRestEndpointRecipes {
             );
             response.statusCode = 400;
             return je.getMessage();
-        } catch (DMLException dmle) {
+        } catch (DmlException dmle) {
             // If we have an issue updating the Accounts we can catch the DML
             // exception
             System.debug(

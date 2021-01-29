@@ -95,7 +95,7 @@ public inherited sharing class DynamicSOQLRecipes {
      * @example
      * System.debug(DynamicSOQLRecipes.typecastDataIntelligently(2).size());
      **/
-    @SuppressWarnings('PMD.ApexCRUDViolation')
+    @SuppressWarnings('PMD.ApexSOQLInjection')
     public static List<Account> typecastDataIntelligently(
         String numberOfRecords
     ) {
@@ -153,11 +153,16 @@ public inherited sharing class DynamicSOQLRecipes {
      *   );
      *   System.debug(results);
      */
-    @SuppressWarnings('PMD.ApexCRUDViolation')
+    @SuppressWarnings('PMD.ApexSOQLInjection')
     public static List<Account> simpleQueryBuilder(
         List<String> fields,
         String whereClause
     ) {
+        if (
+            !QuiddityGuard.isAcceptableQuiddity(QuiddityGuard.trustedQuiddities)
+        ) {
+            return new List<Account>();
+        }
         String fieldList = String.escapeSingleQuotes(String.join(fields, ', '));
         String queryString =
             'SELECT ' +

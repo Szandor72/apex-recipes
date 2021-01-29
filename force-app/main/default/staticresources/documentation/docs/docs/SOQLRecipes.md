@@ -11,7 +11,7 @@ Demonstrates how to make various types of SOQL calls including multi-object quer
 
 ---
 ## Methods
-### `getAccountsInState(String state)` → `List<Account>`
+### `getAccountRecordsInState(String state)` → `List<Account>`
 
 Demonstrates how to use a bound variable in a WHERE clause
 
@@ -20,48 +20,55 @@ Demonstrates how to use a bound variable in a WHERE clause
 |-----|-----------|
 |`state` |  String representing a US State code (AK, KS, etc.) |
 
-#### Example
-```java
-System.debug(SOQLRecipes.getAccountsInState('ks'));
-```
+#### Return
 
-### `getComplexFilteredList()` → `List<Account>`
+**Type**
 
-Demonstrates how to use a complex WHERE clause in a SOQL query Note: This method has a false-positive PMD warning. Our query includes the keyword 'WITH SECURITY_ENFORCED' which prevents this query from accessing fields and objects that they don't have permission to access. This is a form of inline CRUD/FLS Check.
+List<Account>
 
-#### Example
-```java
-System.debug(SOQLRecipes.getComplexFilteredList());
-```
+**Description**
 
-### `getContactsAndAccounts()` → `List<Account>`
-
-Demonstrates how to query an object, as well as it's related child objects Note: This method has a false-positive PMD warning. Our query includes the keyword 'WITH SECURITY_ENFORCED' which prevents this query from accessing fields and objects that they don't have permission to access. This is a form of inline CRUD/FLS Check.
+List<Account>
 
 #### Example
 ```java
-System.debug(SOQLRecipes.getContactsAndAccounts());
+System.debug(SOQLRecipes.getAccountRecordsInState('ks'));
 ```
 
-### `getDetailsFromBothParents()` → `List<Junction__c>`
+### `getChunksOfLargeNumbersOfRecords()` → `Integer[]`
 
-Demonstrates how to write a query that pulls information from two parent objects through a junction object Note: This method has a false-positive PMD warning. Our query includes the keyword 'WITH SECURITY_ENFORCED' which prevents this query from accessing fields and objects that they don't have permission to access. This is a form of inline CRUD/FLS Check.
+One of the little known features of SOQL for loops is that you can iterate not only over each record returned by the query, but also over each *chunk of records*. As the code below demonstrates, specifying the iteration variable as a list/array will return 200 record chunks from the query, rather than individual records. Note: Normally, if you're only dealing with counts of records, you'd utilize the Count() soql method, but in this case we're demonstrating that this form of a soql for loop gives you access both to a list of records, and to the records themselves.
+
+#### Return
+
+**Type**
+
+Integer[]
+
+**Description**
+
+`Integer`
+
+### `getDetailsFromBothParentRecords()` → `List<Junction__c>`
+
+Demonstrates how to write a query that pulls information from two parent objects through a junction object
+
+#### Return
+
+**Type**
+
+List<Junction__c>
+
+**Description**
+
+List<Junction__c>
 
 #### Example
 ```java
-System.debug(SOQLRecipes.getDetailsFromBothParents());
+System.debug(SOQLRecipes.getDetailsFromBothParentRecords());
 ```
 
-### `getFilteredList()` → `List<Account>`
-
-Demonstrates how to use a WHERE clause in a SOQL query Note: This method has a false-positive PMD warning. Our query includes the keyword 'WITH SECURITY_ENFORCED' which prevents this query from accessing fields and objects that they don't have permission to access. This is a form of inline CRUD/FLS Check.
-
-#### Example
-```java
-System.debug(SOQLRecipes.getFilteredList());
-```
-
-### `getFirstXResults(Integer wantedNumberOfRows)` → `List<Account>`
+### `getFirstXRecords(Integer wantedNumberOfRows)` → `List<Account>`
 
 Demonstrates how to use a bound variable to define the LIMIT
 
@@ -70,70 +77,197 @@ Demonstrates how to use a bound variable to define the LIMIT
 |-----|-----------|
 |`wantedNumberOfRows` |  the number of rows desired |
 
-#### Example
-```java
-System.debug(SOQLRecipes.getFirstXResults(5));
-```
+#### Return
 
-### `getParentDetailsForChild()` → `List<Contact>`
+**Type**
 
-Demonstrates how to query fields from a parent object through the relationship field Note: This method has a false-positive PMD warning. Our query includes the keyword 'WITH SECURITY_ENFORCED' which prevents this query from accessing fields and objects that they don't have permission to access. This is a form of inline CRUD/FLS Check.
+List<Account>
 
-#### Example
-```java
-System.debug(SOQLRecipes.getParentDetailsForChild());
-```
+**Description**
 
-### `getSecond10Accounts()` → `List<Account>`
-
-Demonstrates how to get a limited number of results with a given offset; Ie: get the second set of 10 records. Note: This method has a false-positive PMD warning. Our query includes the keyword 'WITH SECURITY_ENFORCED' which prevents this query from accessing fields and objects that they don't have permission to access. This is a form of inline CRUD/FLS Check.
+List<Account>
 
 #### Example
 ```java
-System.debug('SOQLRecipes.getSecond10Accounts()');
+System.debug(SOQLRecipes.getFirstXRecords(5));
 ```
 
-### `getSpecificNumberOfResults()` → `List<Account>`
+### `getLargeNumberOfRecords()` → `Integer`
 
-Demonstrates how to use the LIMIT clause in a SOQL statement Note: This method has a false-positive PMD warning. Our query includes the keyword 'WITH SECURITY_ENFORCED' which prevents this query from accessing fields and objects that they don't have permission to access. This is a form of inline CRUD/FLS Check.
+Demonstrates how to loop over a SOQL query
+
+#### Return
+
+**Type**
+
+Integer
+
+**Description**
+
+integer
 
 #### Example
 ```java
-System.debug(SOQLRecipes.getSpecificNumberOfResults());
+System.debug(SOQLRecipes.getLargeNumberOfRecords());
 ```
 
-### `getSumOfOpportunities(Id accountId)` → `Double`
+### `getParentRecordDetailsFromChildRecord()` → `List<Contact>`
 
-demonstrates how to use aggregate methods, like Sum() or Count() in a SOQL query. This example generates the sum of opportunities associated with a specified Account Note: This method has a false-positive PMD warning. Our query includes the keyword 'WITH SECURITY_ENFORCED' which prevents this query from accessing fields and objects that they don't have permission to access. This is a form of inline CRUD/FLS Check.
+Demonstrates how to query fields from a parent object through the relationship field
+
+#### Return
+
+**Type**
+
+List<Contact>
+
+**Description**
+
+List<Contact>
+
+#### Example
+```java
+System.debug(SOQLRecipes.getParentRecordDetailsFromChildRecord());
+```
+
+### `getRecords()` → `List<Account>`
+
+Demonstrates the proper way to query accounts with SOQL keeping FLS and CRUD in account.
+
+#### Return
+
+**Type**
+
+List<Account>
+
+**Description**
+
+list<Account>
+
+#### Example
+```java
+List<Account> results = SOQLRecipes.querySingleObject();
+System.debug(results);
+```
+
+### `getRecordsByFieldValue()` → `List<Account>`
+
+Demonstrates how to use a WHERE clause in a SOQL query
+
+#### Return
+
+**Type**
+
+List<Account>
+
+**Description**
+
+List<Account>
+
+#### Example
+```java
+System.debug(SOQLRecipes.getRecordsByFieldValue());
+```
+
+### `getRecordsByMultipleFieldValues()` → `List<Account>`
+
+Demonstrates how to use a complex WHERE clause in a SOQL query
+
+#### Return
+
+**Type**
+
+List<Account>
+
+**Description**
+
+List<Account>
+
+#### Example
+```java
+System.debug(SOQLRecipes.getRecordsByMultipleFieldValues());
+```
+
+### `getRecordsWithRelatedRecords()` → `List<Account>`
+
+Demonstrates how to query an object, as well as it's related child objects
+
+#### Return
+
+**Type**
+
+List<Account>
+
+**Description**
+
+List<Account>
+
+#### Example
+```java
+System.debug(SOQLRecipes.getRecordsWithRelatedRecords());
+```
+
+### `getSecond10AccountRecords()` → `List<Account>`
+
+Demonstrates how to get a limited number of results with a given offset; Ie: get the second set of 10 records.
+
+#### Return
+
+**Type**
+
+List<Account>
+
+**Description**
+
+List<Account>
+
+#### Example
+```java
+System.debug('SOQLRecipes.getSecond10AccountRecords()');
+```
+
+### `getSpecificNumberOfRecords()` → `List<Account>`
+
+Demonstrates how to use the LIMIT clause in a SOQL statement
+
+#### Return
+
+**Type**
+
+List<Account>
+
+**Description**
+
+List<Account>
+
+#### Example
+```java
+System.debug(SOQLRecipes.getSpecificNumberOfRecords());
+```
+
+### `getSumOfOpportunityRecords(Id accountId)` → `Double`
+
+demonstrates how to use aggregate methods, like Sum() or Count() in a SOQL query. This example generates the sum of opportunities associated with a specified Account
 
 #### Parameters
 |Param|Description|
 |-----|-----------|
 |`accountId` |  an AccountId |
 
+#### Return
+
+**Type**
+
+Double
+
+**Description**
+
+Double
+
 #### Example
 ```java
 Id accountId = [SELECT id FROM Account LIMIT 1].Id;
-System.debug(SOQLRecipes.getSumOfOpportunities(accountId));
-```
-
-### `queryMassiveNumberOfRecordsReturningCount()` → `integer`
-
-Demonstrates how to loop over a SOQL query Note: This method has a false-positive PMD warning. Our query includes the keyword 'WITH SECURITY_ENFORCED' which prevents this query from accessing fields and objects that they don't have permission to access. This is a form of inline CRUD/FLS Check.
-
-#### Example
-```java
-System.debug(SOQLRecipes.queryMassiveNumberOfRecordsReturningCount());
-```
-
-### `querySingleObject()` → `list<Account>`
-
-Demonstrates the proper way to query accounts with SOQL keeping FLS and CRUD in account. Note: This method has a false-positive PMD warning. PMD isn't aware of what WITH SECURITY_ENFORCED does, so it falsely thinks this code doesn't respect FLS/CRUD.
-
-#### Example
-```java
-List<Account> results = SOQLRecipes.querySingleObject();
-System.debug(results);
+System.debug(SOQLRecipes.getSumOfOpportunityRecords(accountId));
 ```
 
 ---
