@@ -14,7 +14,7 @@ public class InboundEmailService implements Messaging.InboundEmailHandler {
             result.success = true;
         } catch (exception e) {
             result.success = false;
-            errorMessage = e.getMessage()+ ' '+e.getStackTraceString();
+            errorMessage = e.getMessage() + ' ' + e.getStackTraceString();
         }
 
         if (!result.success) {
@@ -28,7 +28,7 @@ public class InboundEmailService implements Messaging.InboundEmailHandler {
         Id contactId,
         List<Messaging.InboundEmail.BinaryAttachment> attachments
     ) {
-        if (String.isBlank(contactId) || attachments.isEmpty()) {
+        if (attachments == null || String.isBlank(contactId)) {
             return;
         }
 
@@ -63,7 +63,7 @@ public class InboundEmailService implements Messaging.InboundEmailHandler {
         insert emailTask;
         */
 
-        // in Lightning Experience / with Enhanced Email we 
+        // in Lightning Experience / with Enhanced Email we
         // need to create two records - one that stores the email and one that relates it to whoId/whatId
 
         EmailMessage emailMsg = new EmailMessage(
